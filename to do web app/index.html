@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AetherTask // Premium Task Planner</title>
+  <meta name="description" content="A gorgeous, glassmorphic task planner and organizer designed to keep you productive and inspired.">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Background Glow Elements -->
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    <div class="glow-orb glow-orb-3"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <i data-lucide="compass" class="logo-icon"></i>
+          <span>AetherTask</span>
+        </div>
+        <button class="mobile-close-btn" id="mobileCloseBtn">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <!-- Quick Filters / Default Views -->
+      <nav class="sidebar-nav">
+        <p class="section-title">Views</p>
+        <ul>
+          <li class="nav-item active" data-view="all">
+            <i data-lucide="layout-grid"></i>
+            <span>All Tasks</span>
+            <span class="badge" id="badge-all">0</span>
+          </li>
+          <li class="nav-item" data-view="today">
+            <i data-lucide="calendar"></i>
+            <span>Today</span>
+            <span class="badge" id="badge-today">0</span>
+          </li>
+          <li class="nav-item" data-view="upcoming">
+            <i data-lucide="calendar-days"></i>
+            <span>Upcoming</span>
+            <span class="badge" id="badge-upcoming">0</span>
+          </li>
+          <li class="nav-item" data-view="completed">
+            <i data-lucide="check-circle-2"></i>
+            <span>Completed</span>
+            <span class="badge" id="badge-completed">0</span>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Custom Lists Section -->
+      <div class="sidebar-lists">
+        <div class="lists-header">
+          <p class="section-title">My Lists</p>
+          <button class="add-list-toggle-btn" id="addListToggleBtn" title="Create New List">
+            <i data-lucide="plus"></i>
+          </button>
+        </div>
+        
+        <!-- Add List Form (Hidden by default, slides open) -->
+        <form id="newListForm" class="new-list-form hidden">
+          <input type="text" id="newListInput" placeholder="List name..." required maxlength="20">
+          <button type="submit" class="submit-list-btn" title="Save List">
+            <i data-lucide="check"></i>
+          </button>
+        </form>
+
+        <ul class="custom-lists-container" id="customListsContainer">
+          <!-- Dynamically populated -->
+        </ul>
+      </div>
+
+      <!-- Footer/Info -->
+      <div class="sidebar-footer">
+        <div class="user-profile">
+          <div class="avatar">U</div>
+          <div class="user-info">
+            <span class="username">Guest User</span>
+            <span class="status">Offline Syncing</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i data-lucide="menu"></i>
+      </button>
+      <div class="logo">
+        <i data-lucide="compass" class="logo-icon"></i>
+        <span>AetherTask</span>
+      </div>
+      <div class="mobile-stats">
+        <span id="mobileProgressPercent">0%</span>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="main-content">
+      <!-- Dashboard / List Header -->
+      <header class="content-header">
+        <div class="header-left">
+          <h1 id="activeListTitle" class="list-title">All Tasks</h1>
+          <p id="listDescription" class="list-description">A complete overview of your upcoming work.</p>
+        </div>
+        <div class="header-right">
+          <div class="progress-container">
+            <div class="progress-text">
+              <span>Task Progress</span>
+              <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Quick Add Task Bar -->
+      <section class="task-input-section">
+        <form id="newTaskForm" class="new-task-form">
+          <div class="input-row-main">
+            <input type="text" id="taskTitleInput" placeholder="What needs to be done?" required autocomplete="off">
+            <button type="submit" class="add-task-btn">
+              <i data-lucide="plus"></i>
+              <span>Add Task</span>
+            </button>
+          </div>
+          <div class="input-row-details">
+            <!-- Due Date Picker Wrapper -->
+            <div class="detail-input-group">
+              <i data-lucide="calendar" class="input-icon"></i>
+              <input type="datetime-local" id="taskDateInput" title="Due Date and Time">
+            </div>
+            <!-- List Selection Dropdown -->
+            <div class="detail-input-group">
+              <i data-lucide="list" class="input-icon"></i>
+              <select id="taskListSelect" title="Select List">
+                <option value="inbox">Inbox</option>
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+            <!-- Priority Option -->
+            <div class="detail-input-group">
+              <i data-lucide="flag" class="input-icon"></i>
+              <select id="taskPrioritySelect" title="Priority">
+                <option value="none">Normal Priority</option>
+                <option value="high">High Priority</option>
+                <option value="low">Low Priority</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <!-- Tasks List Dashboard -->
+      <section class="tasks-dashboard">
+        <div class="dashboard-controls">
+          <div class="tasks-count">
+            <span id="tasksRemainingCount">0 tasks left</span>
+          </div>
+          <div class="filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="active">Active</button>
+            <button class="filter-btn" data-filter="completed">Completed</button>
+            <span class="filter-separator">|</span>
+            <select id="sortBySelect" class="sort-select" title="Sort Order">
+              <option value="default">Sort by: Default</option>
+              <option value="date-asc">Due Date (Asc)</option>
+              <option value="date-desc">Due Date (Desc)</option>
+              <option value="priority">Priority</option>
+              <option value="alphabetical">A-Z</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Scrollable Task Container -->
+        <div class="tasks-scroll-container">
+          <div id="tasksList" class="tasks-list">
+            <!-- Dynamically populated with task cards -->
+          </div>
+          
+          <!-- Empty State Wrapper -->
+          <div id="emptyState" class="empty-state hidden">
+            <div class="empty-icon-glow">
+              <i data-lucide="sparkles" class="empty-icon"></i>
+            </div>
+            <h3>No tasks here</h3>
+            <p>Add a new task or customize your lists to get started.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Task Detail / Edit Modal -->
+  <div class="modal-overlay" id="editModalOverlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>Edit Task Details</h3>
+        <button class="modal-close-btn" id="modalCloseBtn">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="editTaskForm" class="edit-task-form">
+        <input type="hidden" id="editTaskId">
+        
+        <div class="form-group">
+          <label for="editTaskTitle">Task Title</label>
+          <input type="text" id="editTaskTitle" required autocomplete="off">
+        </div>
+
+        <div class="form-group">
+          <label for="editTaskDesc">Description</label>
+          <textarea id="editTaskDesc" rows="3" placeholder="Add details or notes for this task..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editTaskDate">Due Date & Time</label>
+            <input type="datetime-local" id="editTaskDate">
+          </div>
+          <div class="form-group">
+            <label for="editTaskList">List</label>
+            <select id="editTaskList">
+              <option value="inbox">Inbox</option>
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editTaskPriority">Priority</label>
+            <select id="editTaskPriority">
+              <option value="none">Normal Priority</option>
+              <option value="high">High Priority</option>
+              <option value="low">Low Priority</option>
+            </select>
+          </div>
+          <div class="form-group check-group">
+            <label class="custom-checkbox-container">
+              <input type="checkbox" id="editTaskCompleted">
+              <span class="checkbox-mark"></span>
+              Mark as Completed
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="deleteTaskModalBtn">
+            <i data-lucide="trash-2"></i>
+            <span>Delete Task</span>
+          </button>
+          <div class="footer-actions">
+            <button type="button" class="btn btn-secondary" id="cancelModalBtn">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="app.js"></script>
+</body>
+</html>
